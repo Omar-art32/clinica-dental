@@ -1,6 +1,6 @@
 # Clínica Dental
 
-Sistema web desarrollado con Laravel y Docker.
+Sistema web para la gestión de una clínica dental, desarrollado con Laravel y Docker.
 
 ## Requisitos
 
@@ -10,11 +10,7 @@ Antes de comenzar, es necesario tener instalado:
 * Docker Compose
 * Git
 
-En Windows y macOS se puede utilizar Docker Desktop.
-
-En Linux se puede instalar Docker y Docker Compose desde los repositorios oficiales de la distribución.
-
-Para comprobar la instalación:
+Para comprobar que están instalados:
 
 ```bash
 docker --version
@@ -26,7 +22,7 @@ git --version
 
 ### 1. Clonar el proyecto
 
-Clonar el repositorio y entrar a la carpeta:
+Clonar el repositorio y entrar en la carpeta:
 
 ```bash
 git clone https://github.com/Omar-art32/clinica-dental.git
@@ -38,10 +34,8 @@ cd clinica-dental
 Crear el archivo `.env` a partir del archivo de ejemplo:
 
 ```bash
-cp .env.example .env
+cp src/.env.example src/.env
 ```
-
-En Windows también se puede copiar `.env.example` manualmente y renombrarlo como `.env`.
 
 La configuración de la base de datos debe utilizar el servicio `db` de Docker:
 
@@ -54,6 +48,8 @@ DB_USERNAME=clinica
 DB_PASSWORD=clinica
 ```
 
+No es necesario modificar `DB_HOST` a `localhost`, ya que Laravel se conecta a MariaDB desde el contenedor.
+
 ### 3. Levantar los contenedores
 
 Construir y levantar los servicios:
@@ -62,7 +58,7 @@ Construir y levantar los servicios:
 docker compose up -d --build
 ```
 
-Comprobar que estén funcionando:
+Comprobar que los contenedores estén funcionando:
 
 ```bash
 docker compose ps
@@ -77,6 +73,8 @@ El proyecto utiliza los siguientes servicios:
 * phpMyAdmin
 
 ### 4. Instalar las dependencias de PHP
+
+Ejecutar:
 
 ```bash
 docker compose exec app composer install
@@ -96,9 +94,13 @@ Ejecutar las migraciones:
 docker compose exec app php artisan migrate
 ```
 
-Si el proyecto incluye un respaldo de la base de datos con información inicial, importarlo en la base de datos antes de utilizar el sistema.
+Si el proyecto cuenta con seeders para generar datos iniciales, se pueden ejecutar con:
 
-### 6. Instalar las dependencias frontend
+```bash
+docker compose exec app php artisan db:seed
+```
+
+### 6. Instalar las dependencias de Node.js
 
 ```bash
 docker compose run --rm node npm install
@@ -110,7 +112,7 @@ docker compose run --rm node npm install
 docker compose run --rm node npm run build
 ```
 
-Después de completar estos pasos, el proyecto estará listo para utilizarse.
+Después de completar estos pasos, el sistema estará listo para utilizarse.
 
 ## Acceso al sistema
 
@@ -132,31 +134,34 @@ phpMyAdmin:
 http://localhost:8082
 ```
 
-Para conectarse a MariaDB desde phpMyAdmin:
+### Datos de conexión a la base de datos
+
+Desde phpMyAdmin:
 
 ```text
 Servidor: db
 Usuario: clinica
 Contraseña: clinica
+Base de datos: clinica_dental_2026
 ```
 
 ## Desarrollo frontend
 
-Cuando se estén realizando cambios en CSS o JavaScript, se puede ejecutar Vite en modo desarrollo:
+Durante el desarrollo se puede ejecutar Vite en modo desarrollo:
 
 ```bash
 docker compose run --rm --service-ports node npm run dev -- --host 0.0.0.0
 ```
 
-Vite quedará disponible en:
+Vite estará disponible en:
 
 ```text
 http://localhost:5173
 ```
 
-Este proceso debe permanecer ejecutándose mientras se trabaja con Vite.
+Este proceso debe permanecer ejecutándose mientras se realizan cambios en CSS o JavaScript.
 
-Si solamente se quiere ejecutar el sistema, no es necesario mantener Node ejecutándose.
+Si solamente se quiere ejecutar el sistema sin modificar el frontend, no es necesario mantener Vite ejecutándose.
 
 ## Detener el proyecto
 
@@ -174,60 +179,88 @@ docker compose up -d
 
 ## Base de datos
 
-La información de MariaDB se almacena en un volumen de Docker.
+La información de MariaDB se almacena en un volumen de Docker llamado:
 
-No utilizar:
+```text
+clinica_dental_db
+```
+
+Para detener los contenedores sin eliminar la información de la base de datos:
+
+```bash
+docker compose down
+```
+
+**No utilizar:**
 
 ```bash
 docker compose down -v
 ```
 
-a menos que se quiera eliminar también el volumen de la base de datos.
+a menos que se quiera eliminar también el volumen y todos los datos almacenados en la base de datos.
 
 ## Solución de problemas
 
-Si el proyecto presenta errores después de realizar cambios, primero comprobar que los contenedores estén activos:
+Si algún servicio presenta problemas, se pueden consultar los contenedores:
 
 ```bash
 docker compose ps
 ```
 
-También se pueden consultar los registros:
+Ver los registros de Laravel/PHP:
 
 ```bash
 docker compose logs app
+```
+
+Ver los registros de Nginx:
+
+```bash
 docker compose logs nginx
+```
+
+Ver los registros de MariaDB:
+
+```bash
 docker compose logs db
 ```
 
-Si se realizaron cambios en la configuración de Laravel, se puede limpiar la caché:
+Limpiar las cachés de Laravel:
 
 ```bash
 docker compose exec app php artisan optimize:clear
 ```
 
-Si los estilos o JavaScript no aparecen correctamente, volver a generar los archivos frontend:
+Volver a compilar los archivos frontend:
 
 ```bash
 docker compose run --rm node npm run build
 ```
 
-## Estructura principal
+## Estructura del proyecto
 
 ```text
 clinica-dental/
 ├── docker/
+│   └── nginx/
 ├── src/
+│   ├── app/
+│   ├── bootstrap/
+│   ├── config/
+│   ├── database/
+│   ├── public/
+│   ├── resources/
+│   ├── routes/
+│   ├── storage/
+│   ├── tests/
+│   ├── artisan
+│   ├── composer.json
+│   └── package.json
 ├── compose.yaml
 ├── Dockerfile
+├── .gitignore
 └── README.md
 ```
-
-El código de Laravel se encuentra dentro de `src`.
-
-La configuración de los servicios de Docker se encuentra en `compose.yaml`.
-
-La configuración de Nginx se encuentra dentro de `docker/`.
 
 ## Tecnologías
 
@@ -239,4 +272,7 @@ La configuración de Nginx se encuentra dentro de `docker/`.
 * Docker Compose
 * Node.js
 * Vite
-* Tablar
+* Tabler
+* Spatie Laravel Permission
+* phpMyAdmin
+

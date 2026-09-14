@@ -23,7 +23,7 @@ services:
     container_name: clinica-dental-db
     restart: unless-stopped
     environment:
-      MARIADB_DATABASE: clinica_dental
+      MARIADB_DATABASE: clinica_dental_2026
       MARIADB_USER: clinica
       MARIADB_PASSWORD: clinica
       MARIADB_ROOT_PASSWORD: root
