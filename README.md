@@ -29,7 +29,7 @@ git --version
 Clonar el repositorio y entrar a la carpeta:
 
 ```bash
-git clone URL_DEL_REPOSITORIO
+git clone https://github.com/Omar-art32/clinica-dental.git
 cd clinica-dental
 ```
 
