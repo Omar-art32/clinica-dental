@@ -49,7 +49,7 @@ La configuración de la base de datos debe utilizar el servicio `db` de Docker:
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
-DB_DATABASE=clinica_dental
+DB_DATABASE=clinica_dental_2026
 DB_USERNAME=clinica
 DB_PASSWORD=clinica
 ```
