@@ -1,0 +1,43 @@
+*.log
+.DS_Store
+
+# Laravel
+src/.env
+src/.env.backup
+src/.env.production
+
+src/.phpactor.json
+src/.phpunit.result.cache
+src/.phpunit.cache
+
+src/public/build
+src/public/fonts-manifest.dev.json
+src/public/hot
+src/public/storage
+
+src/storage/*.key
+src/storage/pail
+
+src/vendor
+src/node_modules
+
+# IDE
+/.codex
+/.cursor/
+/.idea
+/.nova
+/.vscode
+/.zed
+
+# Composer
+/auth.json
+
+# Laravel helpers
+src/_ide_helper.php
+
+# Homestead
+src/Homestead.json
+src/Homestead.yaml
+
+# Windows
+Thumbs.db
